@@ -8,6 +8,8 @@ public class ServiceTemplateApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ServiceTemplateApplication.class, args);
+		
+		// Just a comment to be removed
 	}
 
 }
