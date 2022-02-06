@@ -23,7 +23,7 @@ public interface CustomerService {
 	 * @return The status of the request if successful, otherwise the error and 
 	 * description
 	 */
-	void createCustomer(Customer customer);
+	CustomerResponse createCustomer(Customer customer);
 	
 	/**
 	 * Returns the customer with the Customer ID natural key (safe and idempotent).
@@ -58,7 +58,7 @@ public interface CustomerService {
 	 * @return The status of the customer update, otherwise the error and the
 	 * error description
 	 */
-	void updateCustomer(Customer customer);
+	CustomerResponse updateCustomer(Customer customer);
 	
 	/**
 	 * Deletes the customer specified by the CustomerId (idempotent).
@@ -67,6 +67,6 @@ public interface CustomerService {
 	 * @return The status of the deletion, otherwise the error and description
 	 * of the error 
 	 */
-	void deleteCustomer(String customerId);
+	CustomerResponse deleteCustomer(String customerId);
 
 }

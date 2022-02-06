@@ -37,8 +37,11 @@ public class Customer {
 	@Column(name="LAST_NM")
 	private String lastName;
 	
-	@Column(name="ADD_ST")
+	@Column(name="ADD_ST_1")
 	private String streetAddress1;
+	
+	@Column(name="ADD_ST_2")
+	private String streetAddress2;
 	
 	@Column(name="ADD_CTY")
 	private String city;
@@ -54,6 +57,14 @@ public class Customer {
 	 */
 	public Customer() {
 		//do nothing		
+	}
+	
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	public String getFirstName() {
@@ -78,6 +89,14 @@ public class Customer {
 
 	public void setStreetAddress1(String streetAddress1) {
 		this.streetAddress1 = streetAddress1;
+	}
+	
+	public String getStreetAddress2() {
+		return streetAddress2;
+	}
+
+	public void setStreetAddress2(String streetAddress2) {
+		this.streetAddress2 = streetAddress2;
 	}
 
 	public String getCity() {

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.servicedemo.rest;
+package com.servicedemo.service;
 
 /**
  * Provides the details of the result of a customer service call.
