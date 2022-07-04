@@ -43,7 +43,7 @@ public class Customer {
 	@Column(name="ADD_ST_2")
 	private String streetAddress2;
 	
-	@Column(name="ADD_CTY")
+	@Column(name="ADD_CITY")
 	private String city;
 	
 	@Column(name="ADD_STAT")
@@ -122,7 +122,13 @@ public class Customer {
 	public void setZipCode(String zipCode) {
 		this.zipCode = zipCode;
 	}
-	
-	
 
+	@Override
+	public String toString() {
+		return "Customer [resourceId=" + resourceId + ", customerId=" + customerId + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", streetAddress1=" + streetAddress1 + ", streetAddress2=" + streetAddress2
+				+ ", city=" + city + ", state=" + state + ", zipCode=" + zipCode + "]";
+	}
+
+	
 }

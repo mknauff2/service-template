@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Component;
 
 import com.servicedemo.model.Customer;
 
@@ -27,6 +28,7 @@ import com.servicedemo.model.Customer;
  *    - enter the following JDBC URL jdbc:h2:mem:testdb
  *
  */
+@Component
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 		
 	List<Customer> findAll();

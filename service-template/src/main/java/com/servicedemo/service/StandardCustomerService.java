@@ -3,7 +3,6 @@
  */
 package com.servicedemo.service;
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +51,7 @@ public class StandardCustomerService implements CustomerService {
 		} catch (Exception e) {
 			
 			// TODO: see if we can catch specific errors such as duplicates and 
-			//       fields that are null
+			//       fields that are null - look into "policy" objects from DDD
 			//
 			response =
 					new CustomerResponse(CustomerResponse.ResultCodes.UNKNOWN,
@@ -91,6 +90,7 @@ public class StandardCustomerService implements CustomerService {
 	@Override
 	public List<Customer> getCustomerByLastName(String lastName) {
 		// TODO Auto-generated method stub
+		// TODO Look at HTTP PATCH Method
 		return null;
 	}
 
@@ -103,8 +103,29 @@ public class StandardCustomerService implements CustomerService {
 
 	@Override
 	public CustomerResponse deleteCustomer(String customerId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		CustomerResponse response = null;
+		Optional<Customer> customer = repository.findByCustomerId(customerId);
+		
+		if (customer.isPresent()) {
+			
+			repository.delete(customer.get());
+			response = new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"");
+			LOG.info("Customer deleted: {}", customer);
+			
+		} else {
+			
+			String message = 
+					String.format("Unable to delete the customer - customer not found - ID: %s", 
+							customerId); 
+			response =
+					new CustomerResponse(CustomerResponse.ResultCodes.NOT_FOUND,
+						message);
+			LOG.info(message);
+
+		}
+		
+		return response;
 
 	}
 

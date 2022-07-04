@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 // Mock MVC
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.context.ActiveProfiles;
+//import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.jayway.jsonpath.JsonPath;
+//import com.servicedemo.rest.CustomerController;
 
 
 // Provides the required Spring Boot Test Environment
@@ -46,7 +47,7 @@ class ServiceTemplateApplicationTests {
 	//
 	@Autowired
 	private MockMvc mockMvc;
-	
+		
 	// First test is to make sure that the application context can be
 	// loaded correctly
 	//
@@ -119,6 +120,34 @@ class ServiceTemplateApplicationTests {
 		String zipCode = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.ZIP);
 		Assertions.assertEquals(FieldValues.ZIP.toString(), zipCode);
 				
+	}
+	
+	@Test
+	void testDeleteCustomerByIdSuccess() throws Exception {
+		
+		
+		// Setup the the customer to delete the customer
+		testCreateCustomerSuccess();
+		
+		// Delete the customer and makes sure that server provides an
+		// HTTP STatus = 200 (OK)
+		//
+		MvcResult result =
+		this.mockMvc.perform(
+				MockMvcRequestBuilders
+				.delete("/customers/v1/" + "{id}", FieldValues.CUSTOMER_ID.toString())
+				.header("REQUEST_ID", "1003")
+				.header("CORR_ID", "1001")
+		        .accept("application/json"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andDo(MockMvcResultHandlers.print())
+				.andReturn();
+		
+		// and make sure that the customer was found
+		String resultCode = JsonPath.read(result.getResponse().getContentAsString(), 
+				"$." + "resultCode");
+		Assertions.assertNotEquals("NOT_FOUND", resultCode);
+		
 	}
 	
 	/**
