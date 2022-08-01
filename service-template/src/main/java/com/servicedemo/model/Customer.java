@@ -53,10 +53,50 @@ public class Customer {
 	private String zipCode;
 	
 	/**
-	 * 
+	 * default constructor
 	 */
 	public Customer() {
 		//do nothing		
+	}
+	
+	/**
+	 * Copy constructor 
+	 * 
+	 * @param other customer to copy
+	 * 
+	 */
+	public Customer(Customer other) {
+		super();
+		
+		this.resourceId = other.resourceId;
+		this.customerId = other.customerId;
+		this.firstName = other.firstName;
+		this.lastName = other.lastName;
+		this.streetAddress1 = other.streetAddress1;
+		this.streetAddress2 = other.streetAddress2;
+		this.city = other.city;
+		this.state = other.state;
+		this.zipCode = other.zipCode;
+		
+	}
+	
+	/**
+	 * Construct a customer from a builder object
+	 * 
+	 * @param builder
+	 */
+	private Customer(CustomerBuilder builder) {
+		super();
+		
+		this.customerId = builder.customerId;
+		this.firstName = builder.firstName;
+		this.lastName = builder.lastName;
+		this.streetAddress1 = builder.streetAddress1;
+		this.streetAddress2 = builder.streetAddress2;
+		this.city = builder.city;
+		this.state = builder.state;
+		this.zipCode = builder.zipCode;
+		
 	}
 	
 	public String getCustomerId() {
@@ -129,6 +169,72 @@ public class Customer {
 				+ ", lastName=" + lastName + ", streetAddress1=" + streetAddress1 + ", streetAddress2=" + streetAddress2
 				+ ", city=" + city + ", state=" + state + ", zipCode=" + zipCode + "]";
 	}
+	
+	/**
+	 * Convenience class to build a customer object
+	 * 
+	 * @author mikeknauff
+	 *
+	 */
+	public static class CustomerBuilder {
+		
+		private String customerId;
+		private String firstName;
+		private String lastName;
+		private String streetAddress1;
+		private String streetAddress2;
+		private String city;
+		private String state;
+		private String zipCode;
+		
+		public CustomerBuilder() {
+			// do nothing
+		}
 
+		public CustomerBuilder customerId(String customerId) {
+			this.customerId = customerId;
+			return this;
+		}
+
+		public CustomerBuilder firstName(String firstName) {
+			this.firstName = firstName;
+			return this;
+		}
+
+		public CustomerBuilder lastName(String lastName) {
+			this.lastName = lastName;
+			return this;
+		}
+
+		public CustomerBuilder streetAddress1(String streetAddress1) {
+			this.streetAddress1 = streetAddress1;
+			return this;
+		}
+
+		public CustomerBuilder streetAddress2(String streetAddress2) {
+			this.streetAddress2 = streetAddress2;
+			return this;
+		}
+
+		public CustomerBuilder city(String city) {
+			this.city = city;
+			return this;
+		}
+
+		public CustomerBuilder state(String state) {
+			this.state = state;
+			return this;
+		}
+
+		public CustomerBuilder zipCode(String zipCode) {
+			this.zipCode = zipCode;
+			return this;
+		}
+		
+		public Customer build() {
+			return new Customer(this);
+		}
+				
+	}
 	
 }

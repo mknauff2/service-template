@@ -3,6 +3,8 @@
  */
 package com.servicedemo.service;
 
+import com.servicedemo.model.Customer;
+
 /**
  * Provides the details of the result of a customer service call.
  * 
@@ -35,6 +37,7 @@ public final class CustomerResponse {
 	
 	private ResultCodes resultCode;
 	private String responseDescription;
+	private Customer customer;
 
 	/**
 	 * Creates a new CustomerResponse
@@ -50,10 +53,11 @@ public final class CustomerResponse {
 	 * @param resultCode
 	 * @param responseDescription
 	 */
-	public CustomerResponse(ResultCodes resultCode, String responseDescription) {
+	public CustomerResponse(ResultCodes resultCode, String responseDescription, Customer customer) {
 		
 		this.resultCode = resultCode;
 		this.responseDescription = responseDescription;
+		this.customer = customer;
 	}
 
 	/**
@@ -83,6 +87,14 @@ public final class CustomerResponse {
 	public void setResponseDescription(String responseDescription) {
 		this.responseDescription = responseDescription;
 	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 	
-	
+		
 }

@@ -43,9 +43,9 @@ public class StandardCustomerService implements CustomerService {
 		
 		try {
 			
-			repository.save(customer);
+			Customer savedCustomer = repository.save(customer);
 			response = 
-					new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"");
+					new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"", savedCustomer);
 			LOG.info("Customer saved: {}", customer);
 						
 		} catch (Exception e) {
@@ -55,7 +55,7 @@ public class StandardCustomerService implements CustomerService {
 			//
 			response =
 					new CustomerResponse(CustomerResponse.ResultCodes.UNKNOWN,
-							"An unknown error occured attempting to save the customer");
+							"An unknown error occured attempting to save the customer", null);
 			LOG.debug(e.toString());
 						
 		} 
@@ -110,8 +110,8 @@ public class StandardCustomerService implements CustomerService {
 		if (customer.isPresent()) {
 			
 			repository.delete(customer.get());
-			response = new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"");
-			LOG.info("Customer deleted: {}", customer);
+			response = new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"", customer.get());
+			LOG.info("Customer deleted: {}", customer.get());
 			
 		} else {
 			
@@ -120,7 +120,7 @@ public class StandardCustomerService implements CustomerService {
 							customerId); 
 			response =
 					new CustomerResponse(CustomerResponse.ResultCodes.NOT_FOUND,
-						message);
+						message, null);
 			LOG.info(message);
 
 		}

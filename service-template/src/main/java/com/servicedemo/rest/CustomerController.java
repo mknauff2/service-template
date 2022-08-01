@@ -74,7 +74,7 @@ public class CustomerController {
 					
 		} catch (Exception e) {
 			
-			response = new CustomerResponse(ResultCodes.UNKNOWN, "Error creating customer");
+			response = new CustomerResponse(ResultCodes.UNKNOWN, "Error creating customer", newCustomer);
 			entity = responseHandler(response);
 			LOG.debug(e.toString());
 						
@@ -146,7 +146,7 @@ public class CustomerController {
 					
 		} catch (Exception e) {
 			
-			response = new CustomerResponse(ResultCodes.UNKNOWN, "Error deleting customer");
+			response = new CustomerResponse(ResultCodes.UNKNOWN, "Error deleting customer", null);
 			entity = responseHandler(response);
 			LOG.debug(e.toString());
 						
