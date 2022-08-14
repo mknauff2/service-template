@@ -83,21 +83,57 @@ public class StandardCustomerService implements CustomerService {
 
 	@Override
 	public Customer getCustomer(Long resourceId) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Optional<Customer> customer = repository.findById(resourceId);
+		
+		if (customer.isPresent()) {
+			
+			return customer.get();
+			
+		} else {
+			
+			// customer not found
+			return null;
+			
+		}
+
 	}
 
 	@Override
 	public List<Customer> getCustomerByLastName(String lastName) {
-		// TODO Auto-generated method stub
-		// TODO Look at HTTP PATCH Method
-		return null;
+		
+		return repository.findByLastName(lastName);
+				
 	}
 
 	@Override
 	public CustomerResponse updateCustomer(Customer customer) {
 		// TODO Auto-generated method stub
-		return null;
+		// TODO Look at HTTP PATCH Method
+		CustomerResponse response;		
+		Optional<Customer> updateCustomer = 
+				repository.findByCustomerId(customer.getCustomerId());
+		
+		if (updateCustomer.isPresent()) {
+			
+			Customer updatedCustomer = repository.save(customer);
+			response = new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,
+					"Successfully updated the customer", updatedCustomer);
+			LOG.info("Customer updated: {}", customer);
+			
+		} else {
+			
+			String message = 
+					String.format("Unable to update the customer - customer not found - ID: %s", 
+							customer.getCustomerId()); 
+			response =
+					new CustomerResponse(CustomerResponse.ResultCodes.NOT_FOUND,
+						message, null);
+			LOG.info(message);
+
+		}
+		
+		return response;
 
 	}
 

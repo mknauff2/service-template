@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 @Table(name="customer")
 public class Customer {
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -88,6 +89,7 @@ public class Customer {
 	private Customer(CustomerBuilder builder) {
 		super();
 		
+		this.resourceId = builder.resourceId;
 		this.customerId = builder.customerId;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
@@ -99,6 +101,15 @@ public class Customer {
 		
 	}
 	
+		
+	public long getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(long resourceId) {
+		this.resourceId = resourceId;
+	}
+
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -178,6 +189,7 @@ public class Customer {
 	 */
 	public static class CustomerBuilder {
 		
+		private Long   resourceId;
 		private String customerId;
 		private String firstName;
 		private String lastName;
@@ -189,6 +201,11 @@ public class Customer {
 		
 		public CustomerBuilder() {
 			// do nothing
+		}
+		
+		public CustomerBuilder resourceId(Long resourceId) {
+			this.resourceId = resourceId;
+			return this;
 		}
 
 		public CustomerBuilder customerId(String customerId) {

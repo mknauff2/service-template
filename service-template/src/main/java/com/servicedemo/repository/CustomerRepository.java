@@ -33,7 +33,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 		
 	List<Customer> findAll();
 	
-	Optional<Customer>	findById(Long resourcesId);
+	Optional<Customer>	findById(Long resourceId);
 	
 	Optional<Customer> findByCustomerId(String customerId);
 	
