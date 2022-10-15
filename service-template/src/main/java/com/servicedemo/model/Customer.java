@@ -29,7 +29,7 @@ public class Customer {
 	@Column(name="RES_ID", unique=true)
 	private long resourceId;
 
-	@Column(name="CUST_ID")
+	@Column(name="CUST_ID", unique=true)
 	private String customerId;
 	
 	@Column(name="FIRST_NM")

@@ -13,3 +13,7 @@ CREATE TABLE customer (
 );
 
 INSERT INTO customer (RES_ID, CUST_ID, FIRST_NM, LAST_NM, ADD_ST_1, ADD_ST_2, ADD_CITY, ADD_STAT, ADD_ZIP) VALUES (100, 'LEE_2', 'Bruce', 'Lee', '41 Cumberland Road', 'Unit A', 'Kowloon', 'Hong Kong', '9234W-Z');
+INSERT INTO customer (RES_ID, CUST_ID, FIRST_NM, LAST_NM, ADD_ST_1, ADD_ST_2, ADD_CITY, ADD_STAT, ADD_ZIP) VALUES (11000, 'KENT1', 'Clark', 'Kent', '10 University Road', 'Unit 1', 'Metropolis', 'New York', '10021');
+INSERT INTO customer (RES_ID, CUST_ID, FIRST_NM, LAST_NM, ADD_ST_1, ADD_ST_2, ADD_CITY, ADD_STAT, ADD_ZIP) VALUES (12000, 'KENT2', 'Lois', 'Kent', '10 University Road', 'Unit 1', 'Metropolis', 'New York', '10021');
+INSERT INTO customer (RES_ID, CUST_ID, FIRST_NM, LAST_NM, ADD_ST_1, ADD_ST_2, ADD_CITY, ADD_STAT, ADD_ZIP) VALUES (13000, 'KENT3', 'Jon', 'Kent', '10 University Road', 'Unit 2', 'Metropolis', 'New York', '10021');
+INSERT INTO customer (RES_ID, CUST_ID, FIRST_NM, LAST_NM, ADD_ST_1, ADD_ST_2, ADD_CITY, ADD_STAT, ADD_ZIP) VALUES (14000, 'KENT4', 'Martha', 'Kent', '10 University Road', 'Unit 2', 'Metropolis', 'New York', '10021');

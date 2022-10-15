@@ -25,7 +25,10 @@ import com.servicedemo.model.Customer;
  *    - to invoke the console enter the following URI in the browser
  *      http://localhost:8080/h2-console/
  *      
- *    - enter the following JDBC URL jdbc:h2:mem:testdb
+ *    - enter the following JDBC URL jdbc:h2:mem:testdb - get correct db instance 
+ *      from STDOUT and will look something like this: "H2 console available at '/h2-console'.
+ *      Database available at 'jdbc:h2:mem:61264277-190f-499f-af6b-634eb544a7ed'"
+ *      DB Connect string changes with each startup for embedded H2 db
  *
  */
 @Component

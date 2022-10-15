@@ -16,15 +16,15 @@ import org.springframework.test.context.TestPropertySource;
 import com.servicedemo.model.Customer;
 import com.servicedemo.repository.CustomerRepository;
 
-//We want to test only he Customer Service class without any of the Spring Boot
-//context and dependencies. So we will use only the Mockito JUnit Test Runner
-//to avoid any the the Spring Boot context dependencies
+// We want to test only he Customer Service class without any of the Spring Boot
+// context and dependencies. So we will use only the Mockito JUnit Test Runner
+// to avoid any the the Spring Boot context dependencies
 //
 //@ExtendWith(SpringExtension.class)
 //@ContextConfiguration(classes= {MockitoJUnitRunner.class})
 // Launches the In-Memory Database
 @DataJpaTest
-//Use a different application properties that disables automatic schema initialization
+// Use a different application properties that disables automatic schema initialization
 @TestPropertySource(locations = {"classpath:test-application.properties"})
 /**
  * @author mikeknauff
@@ -39,7 +39,7 @@ class CustomerRepoTest {
 	void test() {
 		List<Customer> customers = repo.findAll();
 		
-		assertEquals(1, customers.size());
+		assertEquals(5, customers.size());
 		
 	}
 	
@@ -50,5 +50,41 @@ class CustomerRepoTest {
 		assertEquals(true, customer.isPresent());
 		assertEquals("LEE_2", customer.get().getCustomerId());
 	}
-
+	
+	@Test
+	void testSaveCustomer_Success() {
+		
+		Customer savedCustomer = repo.save(initTestCustomer());
+		
+		assertNotEquals(null, savedCustomer);
+		assertEquals("BLEE2", savedCustomer.getCustomerId());
+		
+		// Clean-up the db test state
+		repo.delete(savedCustomer);
+	}
+	
+	/**
+	 * Helper function for tests that returns standard customer
+	 * 
+	 * @return the standard test customer
+	 */
+	private Customer initTestCustomer() {
+		
+		// Create the customer to test
+		Customer customer = new Customer.CustomerBuilder()
+				.resourceId((long)1)
+				.customerId("BLEE2")
+				.firstName("Bruce")
+				.lastName("Lee")
+				.streetAddress1("41 Cumberland Road")
+				.streetAddress2("Unit A")
+				.city("Hong Kong")
+				.state("Kowloon")
+				.zipCode("5670-D")
+				.build();
+		
+		return customer;
+		
+	}
+		
 }

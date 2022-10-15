@@ -83,6 +83,32 @@ class CustomerServiceTest {
 		// Assert that the unknwon error is returned
 		assertEquals(ResultCodes.UNKNOWN, response.getResultCode());
 	}
+	
+	@Test
+	void testCreateDupCustomer_Fail() {
+		
+		// Create an optional customer that is required by the repo return
+		// type
+		//
+		Optional<Customer> customer = Optional.of(initTestCustomer());
+
+		// Initialize the jpa repo so that when create() is called it returns the
+		// test customer object when it checks for the duplicate customer
+		//
+		when(mockRepo.findByCustomerId("BLEE2")).thenReturn(customer);
+		
+
+		// Call the service to save the customer and expect it to return
+		// the same customer object from the jpa repo mock after it is saved
+		//
+		CustomerResponse response = service.createCustomer(customer.get());
+
+		// Now test to see if the expected customer object is returned from the
+		// service call
+		//
+		assertEquals(ResultCodes.DUPLICATE, response.getResultCode());
+				
+	}
 
 	@Test
 	void testGetCustomerByCustId_Success() {
@@ -265,7 +291,7 @@ class CustomerServiceTest {
 		// Execute the test
 		CustomerResponse cust = service.updateCustomer(initTestCustomer());
 
-		// Check that a not found result code is returned
+		// Check that a Customer "not found" result code is returned
 		assertEquals(ResultCodes.NOT_FOUND, cust.getResultCode());
 		
 	}

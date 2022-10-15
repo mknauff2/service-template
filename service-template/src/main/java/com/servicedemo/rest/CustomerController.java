@@ -169,6 +169,10 @@ public class CustomerController {
 			
 			entity = new ResponseEntity<>(response, HttpStatus.OK);			
 		
+		} else if (result == ResultCodes.DUPLICATE) {
+			
+			entity = new ResponseEntity<>(response, HttpStatus.PRECONDITION_FAILED);
+			
 		} else if (result == ResultCodes.UNKNOWN) {
 			
 			entity = new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -41,6 +41,19 @@ public class StandardCustomerService implements CustomerService {
 		
 		CustomerResponse response;
 		
+		// TODO: Place a policy that does not allow a duplicate customer to be
+		//       created. A duplicate is defined by any customer with the same
+		//       customer ID.
+		if (getCustomer(customer.getCustomerId()) != null) {
+			response =
+					new CustomerResponse(CustomerResponse.ResultCodes.DUPLICATE,
+							String.format("This customer %s already exists", customer.getCustomerId()), null);
+			
+			return response;
+		}
+		
+		
+		
 		try {
 			
 			Customer savedCustomer = repository.save(customer);
