@@ -153,7 +153,7 @@ class ServiceTemplateApplicationTests {
 	/**
 	 * Test Values
 	 */
-	private enum FieldNames {
+	enum FieldNames {
 		CUSTOMER_ID("customerId"),
 		FIRST_NAME("firstName"),
 		LAST_NAME("lastName"),
@@ -170,7 +170,7 @@ class ServiceTemplateApplicationTests {
 		
 	}
 	
-	private enum FieldValues {
+	enum FieldValues {
 		CUSTOMER_ID("0000001"),
 		FIRST_NAME("Bruce"),
 		LAST_NAME("Lee"),
@@ -187,7 +187,7 @@ class ServiceTemplateApplicationTests {
 		
 	}
 	
-	private final static String testRecord = 
+	final static String testRecord = 
 			"{ \"" + FieldNames.CUSTOMER_ID + "\": \"" + FieldValues.CUSTOMER_ID + "\", "
 			+ "\"" + FieldNames.FIRST_NAME + "\": \"" + FieldValues.FIRST_NAME + "\", " 
 			+ "\"" + FieldNames.LAST_NAME  + "\": \"" + FieldValues.LAST_NAME + "\", "
