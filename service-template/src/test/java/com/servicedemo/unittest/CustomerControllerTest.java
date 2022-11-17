@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,14 +48,11 @@ public class CustomerControllerTest {
 	} */
 	
 	@Test
-	void testCreateCustomer() throws Exception {
+	void testCreateCustomer_Success() throws Exception {
 		
-		// Setup the customer service to return the customer
-		// TODO: Complete this test...build will fail here
 		// Create a customer object and return it from the customer service 
 		// when create is called
-		//
-		
+		//		
 		when(mockService.createCustomer(any())).thenReturn(
 				new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS, "", initTestCustomer()));
 		
@@ -75,24 +73,71 @@ public class CustomerControllerTest {
 	}
 	
 	@Test
-	void testGetCustomer() throws Exception {
+	void testCreateCustomer_Fail() throws Exception {
 		
-		// Setup the test result from the Customer Service
-		when(mockService.getCustomer("0000001")).thenReturn(new Customer());
+		// Prepare the mock service to throw a runtime exception for an unknown
+		// reason
+		//
+		when(mockService.createCustomer(any())).thenThrow(new RuntimeException());
 		
 		// Execute the test
 		RequestBuilder request = MockMvcRequestBuilders
-				.get("/customers/v1/" + "{id}", "0000001")
+				.post("/customers/v1/")
+				.header("REQUEST_ID", "1001")
+				.header("CORR_ID", "1001")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{\"customerId\":\"BLEE2\", \"firstName\":\"Bruce\", \"lastName\":\"Lee\", \"streetAddress1\":\"41 Cumberland Road\", \"streetAddress2\":\"Unit A\", \"city\":\"Hong Kong\", \"state\":\"Kowloon\", \"zipCode\":\"5670-D\"}")
+				.accept(MediaType.APPLICATION_JSON);
+				
+		mockMvc.perform(request)
+				.andExpect(MockMvcResultMatchers.status().is5xxServerError())
+				.andExpect(content().json("{resultCode:UNKNOWN, responseDescription:\"Error creating customer\", customer:{\"resourceId\":0,\"customerId\":\"BLEE2\",\"firstName\":\"Bruce\",\"lastName\":\"Lee\",\"streetAddress1\":\"41 Cumberland Road\",\"streetAddress2\":\"Unit A\",\"city\":\"Hong Kong\",\"state\":\"Kowloon\",\"zipCode\":\"5670-D\"}}"))
+				.andDo(MockMvcResultHandlers.print());	
+	}
+	
+	@Test
+	void testGetCustomer() throws Exception {
+		
+		// Setup the test result from the Customer Service
+		// TODO: Fix the setup of the CustomerReponse for the test - needs a 
+		//       valid customer response that matches a real customer 
+		//
+		CustomerResponse response = new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"", initTestCustomer());
+		when(mockService.getCustomer("10001")).thenReturn(response);
+		
+		// Execute the test
+		RequestBuilder request = MockMvcRequestBuilders
+				.get("/customers/v1/" + "{id}", "10001")
 				.header("REQUEST_ID", "1002")
 				.header("CORR_ID", "1001")
 				.accept(MediaType.APPLICATION_JSON);
 				
 		mockMvc.perform(request)
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(content().json("{customerId:null, firstName:null, lastName:null, streetAddress1:null, streetAddress2:null, city:null, state:null, zipCode:null}"))
+				.andExpect(content().json("{\"resultCode\":\"SUCCESS\",\"responseDescription\":\"\", customer:{\"resourceId\":10001,\"customerId\":\"BLEE2\",\"firstName\":\"Bruce\",\"lastName\":\"Lee\",\"streetAddress1\":\"41 Cumberland Road\",\"streetAddress2\":\"Unit A\",\"city\":\"Hong Kong\",\"state\":\"Kowloon\",\"zipCode\":\"5670-D\"}}"))
 				.andDo(MockMvcResultHandlers.print());
 	
 		// Look also at JSONAssert for testing json strings
+		
+	}
+	
+	@Test
+	void testGetCustomer_Fail() throws Exception {
+		
+		// Setup the test result from the Customer Service
+		when(mockService.getCustomer(anyString())).thenThrow(new RuntimeException());
+	
+		// Execute the test
+		RequestBuilder request = MockMvcRequestBuilders
+			.get("/customers/v1/" + "{id}", "0000001")
+			.header("REQUEST_ID", "1002")
+			.header("CORR_ID", "1001")
+			.accept(MediaType.APPLICATION_JSON);
+			
+		mockMvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().is5xxServerError())
+			.andExpect(content().json("{resultCode:UNKNOWN, responseDescription:\"Error retrieving customer\", customer:null}")) 
+			.andDo(MockMvcResultHandlers.print());
 		
 	}
 	

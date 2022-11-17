@@ -25,6 +25,14 @@ import com.servicedemo.service.CustomerResponse.ResultCodes;
 
 /**
  * @author mikeknauff
+ * 
+ * TODO: Bring controller into better alignment with REST standards
+ *       - Use HTTP Header "Location" to return the URI of the newly created or
+ *         modified resource
+ *       - Use the proper HTTP response codes instead of the custom error codes
+ *         and messages
+ *       - Remove return of custom response object in ReponseEntity for PUT, POST,
+ *         PATCH, and DELETE methods 
  *
  */
 
@@ -61,7 +69,7 @@ public class CustomerController {
 			@RequestHeader HttpHeaders httpHeaders,
 			@RequestBody Customer newCustomer) {
 		
-		// TODO: Logging, Idempotency?, Swagger Doc
+		// TODO: Idempotency?, Swagger Doc
 		
 		CustomerResponse response;
 		ResponseEntity<CustomerResponse> entity;
@@ -97,21 +105,22 @@ public class CustomerController {
 			value="/{customerId}",
 			headers={"REQUEST_ID", "CORR_ID"},
 			produces="application/json")
-	public ResponseEntity<Customer> getCustomer (
+	public ResponseEntity<CustomerResponse> getCustomer (
 			@RequestHeader HttpHeaders httpHeaders,
 			@PathVariable String customerId) {
 		
-		Customer customer = null;
-		ResponseEntity<Customer> entity = null;
+		CustomerResponse response;
+		ResponseEntity<CustomerResponse> entity = null;
 		
 		try {
 			
-			customer = service.getCustomer(customerId);
-			entity = responseHandler(customer);
+			response = service.getCustomer(customerId);
+			entity = responseHandler(response);
 			
 		} catch (Exception e) {
 			
-			entity = responseHandler(customer);
+			response = new CustomerResponse(ResultCodes.UNKNOWN, "Error retrieving customer", null);
+			entity = responseHandler(response);
 			LOG.debug(e.toString());
 		}
 		
@@ -167,7 +176,7 @@ public class CustomerController {
 			
 		} else if (result == ResultCodes.NOT_FOUND) {
 			
-			entity = new ResponseEntity<>(response, HttpStatus.OK);			
+			entity = new ResponseEntity<>(response, HttpStatus.NOT_FOUND);			
 		
 		} else if (result == ResultCodes.DUPLICATE) {
 			
@@ -184,23 +193,6 @@ public class CustomerController {
 			
 		}
 		
-		return entity;
-	}
-	
-private ResponseEntity<Customer> responseHandler(final Customer customer) {
-		
-		ResponseEntity<Customer> entity;
-		
-		if (customer != null) {
-			
-			entity = new ResponseEntity<>(customer, HttpStatus.OK);
-			
-		} else {
-			
-			entity = new ResponseEntity<>(customer, HttpStatus.NOT_FOUND);
-			
-		}
-			
 		return entity;
 	}
 	

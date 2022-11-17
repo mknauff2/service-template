@@ -31,7 +31,7 @@ public interface CustomerService {
 	 * @param customerID The natural key of the customer
 	 * @return The Customer object if found, otherwise an empty or null object
 	 */
-	Customer getCustomer(final String customerId);
+	CustomerResponse getCustomer(final String customerId);
 	
 	/**
 	 * Returns the customer with the internal key (safe and idempotent).
@@ -39,7 +39,7 @@ public interface CustomerService {
 	 * @param resourceId The internally generated key of the customer
 	 * @return The Customer object if found, otherwise an empty or null object  
 	 */
-	Customer getCustomer(final Long resourceId);
+	CustomerResponse getCustomer(final Long resourceId);
 	
 	/**
 	 * Returns one or more customers with the matching last name (safe and idempotent).

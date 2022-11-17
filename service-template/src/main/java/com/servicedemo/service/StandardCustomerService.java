@@ -41,20 +41,18 @@ public class StandardCustomerService implements CustomerService {
 		
 		CustomerResponse response;
 		
-		// TODO: Place a policy that does not allow a duplicate customer to be
-		//       created. A duplicate is defined by any customer with the same
-		//       customer ID.
-		if (getCustomer(customer.getCustomerId()) != null) {
-			response =
-					new CustomerResponse(CustomerResponse.ResultCodes.DUPLICATE,
-							String.format("This customer %s already exists", customer.getCustomerId()), null);
-			
-			return response;
-		}
-		
-		
-		
 		try {
+			
+			// TODO: Place a policy that does not allow a duplicate customer to be
+			//       created. A duplicate is defined by any customer with the same
+			//       customer ID.
+			if (getCustomer(customer.getCustomerId()).getResultCode() == CustomerResponse.ResultCodes.SUCCESS) {
+				response =
+						new CustomerResponse(CustomerResponse.ResultCodes.DUPLICATE,
+								String.format("This customer %s already exists", customer.getCustomerId()), null);
+				
+				return response;
+			}
 			
 			Customer savedCustomer = repository.save(customer);
 			response = 
@@ -78,35 +76,58 @@ public class StandardCustomerService implements CustomerService {
 	}
 
 	@Override
-	public Customer getCustomer(String customerId) {
-				
-		Optional<Customer> customer = repository.findByCustomerId(customerId);
+	public CustomerResponse getCustomer(String customerId) {
 		
-		if (customer.isPresent()) {
+		CustomerResponse response;
+		
+		Optional<Customer> optCustomer = repository.findByCustomerId(customerId);
+		
+		if (optCustomer.isPresent()) {
 			
-			return customer.get();
+			Customer customer = optCustomer.get();
+			
+			response = 
+					new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"", customer);
+			LOG.info("Retrieved customer: {}", customer);
+			
+			return response;
 			
 		} else {
 			
 			// customer not found
-			return null;
+			response = 
+					new CustomerResponse(CustomerResponse.ResultCodes.NOT_FOUND,"Customer not found", null);
+			LOG.info("Customer not found with customerId {}", customerId);
 			
+			return response;			
 		}
 	}
 
 	@Override
-	public Customer getCustomer(Long resourceId) {
+	public CustomerResponse getCustomer(Long resourceId) {
 		
-		Optional<Customer> customer = repository.findById(resourceId);
+		CustomerResponse response; 
 		
-		if (customer.isPresent()) {
+		Optional<Customer> optCustomer = repository.findById(resourceId);
+		
+		if (optCustomer.isPresent()) {
 			
-			return customer.get();
+			Customer customer = optCustomer.get();
+			
+			response = 
+					new CustomerResponse(CustomerResponse.ResultCodes.SUCCESS,"", customer);
+			LOG.info("Retrieved customer: {}", customer);
+			
+			return response;
 			
 		} else {
 			
 			// customer not found
-			return null;
+			response = 
+					new CustomerResponse(CustomerResponse.ResultCodes.NOT_FOUND,"Customer not found", null);
+			LOG.info("Customer not found with resourceID {}", resourceId);
+			
+			return response;
 			
 		}
 
@@ -121,7 +142,6 @@ public class StandardCustomerService implements CustomerService {
 
 	@Override
 	public CustomerResponse updateCustomer(Customer customer) {
-		// TODO Auto-generated method stub
 		// TODO Look at HTTP PATCH Method
 		CustomerResponse response;		
 		Optional<Customer> updateCustomer = 

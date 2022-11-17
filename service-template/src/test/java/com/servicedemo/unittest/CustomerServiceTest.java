@@ -51,6 +51,8 @@ class CustomerServiceTest {
 		// Initialize the jpa repo so that when save() is called it returns the
 		// test customer object
 		//
+		Optional<Customer> optCustomer = Optional.empty();
+		when(mockRepo.findByCustomerId(anyString())).thenReturn(optCustomer);
 		when(mockRepo.save(customer)).thenReturn(customer);
 
 		// Call the service to save the customer and expect it to return
@@ -124,12 +126,12 @@ class CustomerServiceTest {
 		when(mockRepo.findByCustomerId("BLEE2")).thenReturn(customer);
 
 		// Execute the test
-		Customer cust = service.getCustomer("BLEE2");
+		CustomerResponse cust = service.getCustomer("BLEE2");
 
 		// Check that the correct customer is returned when the test customer
 		// ID is used
 		//
-		assertEquals("BLEE2", cust.getCustomerId());
+		assertEquals("BLEE2", cust.getCustomer().getCustomerId());
 
 	}
 	
@@ -140,10 +142,10 @@ class CustomerServiceTest {
 		when(mockRepo.findByCustomerId(anyString())).thenReturn(Optional.empty());
 
 		// Execute the test
-		Customer cust = service.getCustomer("BLEE2");
+		CustomerResponse cust = service.getCustomer("BLEE2");
 
 		// Check that a null is returned
-		assertEquals(null, cust);		
+		assertEquals(null, cust.getCustomer());		
 	}
 	
 	@Test
@@ -161,12 +163,12 @@ class CustomerServiceTest {
 		when(mockRepo.findById((long)10001)).thenReturn(customer);
 
 		// Execute the test
-		Customer cust = service.getCustomer((long)10001);
+		CustomerResponse cust = service.getCustomer((long)10001);
 
 		// Check that the correct customer is returned when the test customer
 		// ID is used
 		//
-		assertEquals(10001, cust.getResourceId());
+		assertEquals(10001, cust.getCustomer().getResourceId());
 
 	}
 	
@@ -207,10 +209,10 @@ class CustomerServiceTest {
 		when(mockRepo.findById(anyLong())).thenReturn(Optional.empty());
 
 		// Execute the test
-		Customer cust = service.getCustomer((long)10001);
+		CustomerResponse cust = service.getCustomer((long)10001);
 
 		// Check that a null is returned
-		assertEquals(null, cust);		
+		assertEquals(null, cust.getCustomer());		
 	}
 
 	@Test
