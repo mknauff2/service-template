@@ -1,15 +1,17 @@
+// TODO: Fix JDK 17 dependencies in the Project Properties Setting
+
+
 
 // Required gradle plug-in support for the project
 plugins {
-	id 'org.springframework.boot' version '2.7.7'
-	//id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'io.spring.dependency-management' version '1.1.0'
 	id 'java'
+	id 'org.springframework.boot' version '3.0.6'
+	id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'com.knauff.mike'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '17'
 
 repositories {
 		mavenCentral()
@@ -17,6 +19,8 @@ repositories {
 
 dependencies {
 
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
 	// Provides support Spring MVC apps
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
@@ -25,9 +29,9 @@ dependencies {
 	
 	// Provides support for the Java Persistence API (JPA) for database support 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	
+		
 	// Support for the H2 in-memory database
-	implementation 'com.h2database:h2'
+	runtimeOnly 'com.h2database:h2'
 	
 	// Select the SLF4J implementation
 	implementation 'ch.qos.logback:logback-classic'
