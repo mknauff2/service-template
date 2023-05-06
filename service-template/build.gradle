@@ -1,7 +1,3 @@
-// TODO: Fix JDK 17 dependencies in the Project Properties Setting
-
-
-
 // Required gradle plug-in support for the project
 plugins {
 	id 'java'
