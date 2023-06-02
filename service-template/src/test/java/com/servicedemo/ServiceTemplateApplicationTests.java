@@ -1,8 +1,13 @@
 package com.servicedemo;
 
+//import java.util.List;
+
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 // junit 5
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -15,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 // import org.springframework.test.context.TestPropertySource;
 
+import com.jayway.jsonpath.JsonPath;
+//import com.servicedemo.model.Customer;
 import com.servicedemo.rest.CustomerController;
 
 // Provides the required Spring Boot Test Environment
@@ -31,15 +38,24 @@ import com.servicedemo.rest.CustomerController;
 // Set any required test properties in the environment
 // @TestPropertySource(properties = {"name.attribute=value"})
 
+// Set the order of the tests due to dependencies between data in the tests 
+// Not considered a best practice - we should look at setting up test data 
+// through SQL scripts at initialization
+//
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 class ServiceTemplateApplicationTests {
 	
 	@Autowired
 	CustomerController controller;
+	
+	static final String URL = "http://localhost:8080/customers/v1/";
 
 	// First test is to make sure that the application context can be
 	// loaded correctly
 	//
 	@Test
+	@Order(1)
 	void contextLoads() {
 		
 		// if no exception is thrown then the application context loaded
@@ -51,13 +67,12 @@ class ServiceTemplateApplicationTests {
 	
 	// Create a customer - Happy Path
 	@Test
+	@Order(2)
 	void testCreateCustomerSuccess() throws Exception {
 		
 		// Create the customer and makes sure that server provides an
 		// HTTP STatus = 200 (OK)
 		//
-		final String url = "http://localhost:8080/customers/v1/";
-		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("REQUEST_ID", "1001");
@@ -65,85 +80,95 @@ class ServiceTemplateApplicationTests {
 		HttpEntity<String> entity = new HttpEntity<String>(testRecord, headers);
 		 
 		RestTemplate rest = new RestTemplate();
-		ResponseEntity<String> response = rest.exchange(url, HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> response = rest.exchange(URL, HttpMethod.POST, entity, String.class);
+				
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+				
+	}
+	
+	// Retrieve a customer by ID - Happy Path
+	@Test
+	@Order(3)
+	void testGetCustomerByIdSuccess() throws Exception {
+		
+		// Create the customer and makes sure that server provides an
+		// HTTP STatus = 200 (OK)
+		//
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("REQUEST_ID", "1002");
+		headers.add("CORR_ID", "1001");
+		HttpEntity<String> entity = new HttpEntity<String>(new String(), headers);
+		 
+		RestTemplate rest = new RestTemplate();
+		ResponseEntity<String> response = rest.exchange(URL + FieldValues.CUSTOMER_ID.toString(), HttpMethod.GET, entity, String.class);
 		
 		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 		
+		// Test the response body
+		String jsonString = response.getBody();
+		
+		String responseCode = JsonPath.read(jsonString, "$.resultCode");
+		Assertions.assertEquals("SUCCESS", responseCode);
+		
+		String responseDescription = JsonPath.read(jsonString, "$.responseDescription");
+		Assertions.assertEquals("", responseDescription);
+		
+		int responseResourceId = JsonPath.read(jsonString, "$.customer.resourceId");
+		Assertions.assertTrue(responseResourceId > 0);
+		
+		String responseCustomerId = JsonPath.read(jsonString, "$.customer." + FieldNames.CUSTOMER_ID);
+		Assertions.assertEquals(FieldValues.CUSTOMER_ID.toString(), responseCustomerId);		
+			
+		String responseFirstName = JsonPath.read(jsonString, "$.customer." + FieldNames.FIRST_NAME);
+		Assertions.assertEquals(FieldValues.FIRST_NAME.toString(), responseFirstName);
+		
+		String responseLastName = JsonPath.read(jsonString, "$.customer." + FieldNames.LAST_NAME);
+		Assertions.assertEquals(FieldValues.LAST_NAME.toString(), responseLastName);
+		
+		String responseStreet1 = JsonPath.read(jsonString, "$.customer." + FieldNames.STREET_1);
+		Assertions.assertEquals(FieldValues.STREET_1.toString(), responseStreet1);
+		
+		String responseStreet2 = JsonPath.read(jsonString, "$.customer." + FieldNames.STREET_2);
+		Assertions.assertEquals(FieldValues.STREET_2.toString(), responseStreet2);
+		
+		String responseCity = JsonPath.read(jsonString, "$.customer." + FieldNames.CITY);
+		Assertions.assertEquals(FieldValues.CITY.toString(), responseCity);
+		
+		String responseState = JsonPath.read(jsonString, "$.customer." + FieldNames.STATE);
+		Assertions.assertEquals(FieldValues.STATE.toString(), responseState);
+		
+		String responseZip = JsonPath.read(jsonString, "$.customer." + FieldNames.ZIP);
+		Assertions.assertEquals(FieldValues.ZIP.toString(), responseZip);
+		
 	}
 	
-	/*
-	
-	// Retrieve a Customer - Happy Path
-	//@Test
-	void testGetCustomerByIdSuccess() throws Exception {
-		
-		MvcResult result = 
-				this.mockMvc.perform(
-						MockMvcRequestBuilders
-						.get("/customers/v1/" + "{id}", FieldValues.CUSTOMER_ID.toString())
-						.header("REQUEST_ID", "1002")
-						.header("CORR_ID", "1001")
-						.accept("application/json"))
-						.andExpect(MockMvcResultMatchers.status().isOk())
-						.andDo(MockMvcResultHandlers.print())
-						.andReturn();
-				
-		// Check to make sure the values are correct
-		String customerId = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.CUSTOMER_ID);
-		Assertions.assertEquals(FieldValues.CUSTOMER_ID.toString(), customerId);
-				
-		String firstName = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.FIRST_NAME);
-		Assertions.assertEquals(FieldValues.FIRST_NAME.toString(), firstName);
-				
-		String lastName = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.LAST_NAME);
-		Assertions.assertEquals(FieldValues.LAST_NAME.toString(), lastName);
-				
-		String streetAddress1 = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.STREET_1);
-		Assertions.assertEquals(FieldValues.STREET_1.toString(), streetAddress1);
-				
-		String streetAddress2 = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.STREET_2);
-		Assertions.assertEquals(FieldValues.STREET_2.toString(), streetAddress2);
-				
-		String city = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.CITY);
-		Assertions.assertEquals(FieldValues.CITY.toString(), city);
-				
-		String state = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.STATE);
-		Assertions.assertEquals(FieldValues.STATE.toString(), state);
-				
-		String zipCode = JsonPath.read(result.getResponse().getContentAsString(), "$." + FieldNames.ZIP);
-		Assertions.assertEquals(FieldValues.ZIP.toString(), zipCode);
-				
-	}
-	
-	//@Test
-	void testDeleteCustomerByIdSuccess() throws Exception {
-		
-		
-		// Setup the the customer to delete the customer
-		testCreateCustomerSuccess();
-		
-		// Delete the customer and makes sure that server provides an
-		// HTTP STatus = 200 (OK)
-		//
-		MvcResult result =
-		this.mockMvc.perform(
-				MockMvcRequestBuilders
-				.delete("/customers/v1/" + "{id}", FieldValues.CUSTOMER_ID.toString())
-				.header("REQUEST_ID", "1003")
-				.header("CORR_ID", "1001")
-		        .accept("application/json"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andDo(MockMvcResultHandlers.print())
-				.andReturn();
-		
-		// and make sure that the customer was found
-		String resultCode = JsonPath.read(result.getResponse().getContentAsString(), 
-				"$." + "resultCode");
-		Assertions.assertNotEquals("NOT_FOUND", resultCode);
-		
+	// Delete a customer by ID - Happy Path
+		@Test
+		@Order(4)
+		void testDeleteCustomerByIdSuccess() throws Exception {
+					
+			// Create the customer and makes sure that server provides an
+			// HTTP STatus = 200 (OK)
+			//
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.add("REQUEST_ID", "1002");
+			headers.add("CORR_ID", "1001");
+			HttpEntity<String> entity = new HttpEntity<String>(new String(), headers);
+			 
+			RestTemplate rest = new RestTemplate();
+			ResponseEntity<String> response = rest.exchange(URL + FieldValues.CUSTOMER_ID.toString(), HttpMethod.DELETE, entity, String.class);
+			
+			Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+			
+			// Test the response body
+			String jsonString = response.getBody();
+			
+			String responseCode = JsonPath.read(jsonString, "$.resultCode");
+			Assertions.assertEquals("SUCCESS", responseCode);
+			
 		}
-		
-		/*ß
 	
 	/**
 	 * Test Values

@@ -42,11 +42,6 @@ public class CustomerControllerTest {
 	@MockBean
 	CustomerService mockService;
 
-	/*@Test
-	void contextLoads() {
-		Assertions.assertTrue(true);
-	} */
-	
 	@Test
 	void testCreateCustomer_Success() throws Exception {
 		
